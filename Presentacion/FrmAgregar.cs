@@ -84,44 +84,55 @@ namespace Presentacion
         private void btnAceptar_Click(object sender, EventArgs e)
         {
             ArticuloNegocio articuloNegocio = new ArticuloNegocio();
-            
+
             try
             {
-                if(articulo ==  null) 
+                if (articulo == null)
                 {
                     articulo = new Articulo();
                 }
-                articulo.Codigo = txtCodigo.Text;
-                articulo.Nombre = txtNombre.Text;
-                articulo.Descripcion = txtDescripcion.Text;
-                articulo.ImagenUrl = txtUrl.Text;
-                articulo.Marca = (Marca)cbxMarca.SelectedItem;
-                articulo.Categoria = (Categoria)cbxCategoria.SelectedItem;
-                articulo.Precio = decimal.Parse(txtPrecio.Text);
-                if(articulo.Id !=0)
+                if (txtCodigo.Text == "" || txtNombre.Text == "" || txtDescripcion.Text == "" || txtPrecio.Text == "")
                 {
-                    articuloNegocio.Modificar(articulo);
-                    MessageBox.Show("Modificado exitosamente");
+                    MessageBox.Show("Ingrese todos los datos");
+                    this.Show();
                 }
                 else
                 {
-                    articuloNegocio.Agregar(articulo);
-                    MessageBox.Show("Agregado exitosamente");
-                    
+                    articulo.Codigo = txtCodigo.Text;
+                    articulo.Nombre = txtNombre.Text;
+                    articulo.Descripcion = txtDescripcion.Text;
+                    articulo.ImagenUrl = txtUrl.Text;
+                    articulo.Marca = (Marca)cbxMarca.SelectedItem;
+                    articulo.Categoria = (Categoria)cbxCategoria.SelectedItem;
+                    articulo.Precio = decimal.Parse(txtPrecio.Text);
+
+                    if (articulo.Id != 0)
+                    {
+                        articuloNegocio.Modificar(articulo);
+                        MessageBox.Show("Modificado exitosamente");
+                    }
+                    else
+                    {
+                        articuloNegocio.Agregar(articulo);
+                        MessageBox.Show("Agregado exitosamente");
+
+                    }
+
+                    if (archivo != null && !File.Exists(ConfigurationManager.AppSettings["images-folder"] + archivo.SafeFileName))   //&& txtUrl.Text.ToUpper().Contains("HTTP")
+                    {
+                        File.Copy(archivo.FileName, ConfigurationManager.AppSettings["images-folder"] + archivo.SafeFileName);
+                    }
+
+                    this.Close();
                 }
-                
-                if(archivo!=null && !File.Exists(ConfigurationManager.AppSettings["images-folder"]+archivo.SafeFileName))   //&& txtUrl.Text.ToUpper().Contains("HTTP")
-                {
-                    File.Copy(archivo.FileName,ConfigurationManager.AppSettings["images-folder"] + archivo.SafeFileName);
-                }
-               
-                this.Close();
+
+
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-            } 
+            }
 
         }
 
